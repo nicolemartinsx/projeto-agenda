@@ -14,16 +14,8 @@ public class Compromisso {
 	private List<Usuario> convidados;
 	private String notificacao;
 
-	private Compromisso(String titulo, String descricao, String dataInicio, String dataTermino, String local,
-			Agenda agenda, List<Usuario> convidados, String notificacao) {
-		this.titulo = titulo;
-		this.descricao = descricao;
-		this.dataInicio = dataInicio;
-		this.dataTermino = dataTermino;
-		this.local = local;
-		this.agenda = agenda;
-		this.convidados = convidados;
-		this.notificacao = notificacao;
+	public Compromisso() {
+		
 	}
 
 	public int getIdCompromisso() {

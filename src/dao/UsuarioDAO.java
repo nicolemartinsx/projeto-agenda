@@ -1,14 +1,11 @@
 package dao;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
-
-import javax.imageio.ImageIO;
 
 import entities.Usuario;
 
@@ -25,16 +22,34 @@ public class UsuarioDAO {
 
 		try {
 			st = conn.prepareStatement(
-					"insert into usuario (nome_completo, data_nascimento, genero, email, imagem_perfil, nome_usuario, senha) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+					"insert into usuario (nome_completo, data_nascimento, genero, email, imagem_perfil, nome_usuario, senha) VALUES (?, ?, ?, ?, ?, ?, ?)");
 			st.setString(1, usuario.getNomeCompleto());
-			st.setDate(3, new Date(usuario.getDataNascimento().getTime()));
-			st.setString(4, usuario.getGenero());
+			st.setDate(2, new Date(usuario.getDataNascimento().getTime()));
+			st.setString(3, usuario.getGenero());
+			st.setString(4, usuario.getEmail());
 			st.setBytes(5, usuario.getImagemPerfil());
-			st.setString(6, usuario.getEmail());
-			st.setString(7, usuario.getnomeUsuario());
-			st.setString(8, usuario.getSenha());
+			st.setString(6, usuario.getNomeUsuario());
+			st.setString(7, usuario.getSenha());
 
 			st.executeUpdate();
+		} finally {
+			BancoDados.finalizarStatement(st);
+			BancoDados.desconectar();
+		}
+	}
+
+	public int realizarLogin(String nomeUsuario, String senha) throws SQLException {
+		PreparedStatement st = null;
+
+		try {
+			st = conn.prepareStatement("select from usuario where nome_usuario = ? and senha = ?");
+			st.setString(1, nomeUsuario);
+			st.setString(2, senha);
+
+			int linhasManipuladas = st.executeUpdate();
+
+			return linhasManipuladas;
+
 		} finally {
 			BancoDados.finalizarStatement(st);
 			BancoDados.desconectar();
@@ -47,21 +62,14 @@ public class UsuarioDAO {
 
 		try {
 			st = conn.prepareStatement(
-					"update usuario set nome_completo=?, data_nascimento=?, genero=?, email=?, imagem_perfil=?, nome_usuario=?, senha=?");
+					"update usuario set nome_completo=?, data_nascimento=?, genero=?, imagem_perfil=?, email=?, nome_usuario=?, senha=?");
 			st.setString(1, usuario.getNomeCompleto());
-			st.setDate(3, new Date(usuario.getDataNascimento().getTime()));
-			st.setString(4, usuario.getGenero());
-			if (usuario.getImagemPerfil() != null) {
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				//ImageIO.write(usuario.getImagemPerfil(), "jpg", baos);
-				byte[] imagemBytes = baos.toByteArray();
-				st.setBytes(5, imagemBytes);
-			} else {
-				st.setNull(5, Types.BLOB);
-			}
-			st.setString(6, usuario.getEmail());
-			st.setString(7, usuario.getnomeUsuario());
-			st.setString(8, usuario.getSenha());
+			st.setDate(2, new Date(usuario.getDataNascimento().getTime()));
+			st.setString(3, usuario.getGenero());
+			st.setBytes(4, usuario.getImagemPerfil());
+			st.setString(5, usuario.getEmail());
+			st.setString(6, usuario.getNomeUsuario());
+			st.setString(7, usuario.getSenha());
 
 			st.executeUpdate();
 

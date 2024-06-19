@@ -7,9 +7,8 @@ public class Agenda {
 	private String nome;
 	private String descricao;
 
-	private Agenda(String nome, String descricao) {
-		this.nome = nome;
-		this.descricao = descricao;
+	public Agenda() {
+		
 	}
 
 	public int getIdAgenda() {

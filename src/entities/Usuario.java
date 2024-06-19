@@ -5,24 +5,17 @@ import java.sql.Date;
 
 public class Usuario {
 
+	private int idUsuario;
 	private String nomeCompleto;
 	private Date dataNascimento;
 	private String genero;
 	private String email;
-	private BufferedImage imagemPerfil;
+	private byte[] imagemPerfil;
 	private String nomeUsuario;
 	private String senha;
-	private Object getImagemPerfil;
-	
-	private Usuario(String nomeCompleto, Date dataNascimento, String genero, String email, BufferedImage imagemPerfil,
-			String nomeUsuario, String senha) {
-		this.nomeCompleto = nomeCompleto;
-		this.dataNascimento = dataNascimento;
-		this.genero = genero;
-		this.email = email;
-		this.imagemPerfil = imagemPerfil;
-		this.nomeUsuario = nomeUsuario;
-		this.senha = senha;
+
+	public Usuario() {
+
 	}
 
 	public String getNomeCompleto() {
@@ -57,20 +50,12 @@ public class Usuario {
 		this.email = email;
 	}
 
-	public BufferedImage getImagemPerfil() {
+	public byte[] getImagemPerfil() {
 		return imagemPerfil;
 	}
 
-	public void setImagemPerfil(BufferedImage imagemPerfil) {
+	public void setImagemPerfil(byte[] imagemPerfil) {
 		this.imagemPerfil = imagemPerfil;
-	}
-
-	public String getnomeUsuario() {
-		return nomeUsuario;
-	}
-
-	public void setnomeUsuario(String nomeUsuario) {
-		this.nomeUsuario = nomeUsuario;
 	}
 
 	public String getSenha() {
@@ -80,8 +65,21 @@ public class Usuario {
 	public void setSenha(String senha) {
 		this.senha = senha;
 	}
-	
-	
-	
-	
+
+	public int getIdUsuario() {
+		return idUsuario;
+	}
+
+	public void setIdUsuario(int idUsuario) {
+		this.idUsuario = idUsuario;
+	}
+
+	public String getNomeUsuario() {
+		return nomeUsuario;
+	}
+
+	public void setNomeUsuario(String nomeUsuario) {
+		this.nomeUsuario = nomeUsuario;
+	}
+
 }

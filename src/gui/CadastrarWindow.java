@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 
 import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -61,9 +62,8 @@ public class CadastrarWindow extends JFrame {
 	private JLabel lblImagemPerfil;
 
 	private MaskFormatter mascaraData;
-	private UsuarioService usuarioService;
 	private JPanel painelImagemPerfil;
-	
+	private UsuarioService usuarioService = new UsuarioService();
 
 	public CadastrarWindow() {
 		criarMascara();
@@ -72,24 +72,72 @@ public class CadastrarWindow extends JFrame {
 
 	private void cadastrarUsuario() {
 		try {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		Usuario usuario = new Usuario();
-		
-		usuario.setNomeCompleto(txtNomeCompleto.getText());
-		usuario.setDataNascimento(new java.sql.Date(sdf.parse(this.txtDataNasc.getText()).getTime()));
-		usuario.setGenero(verificarRbGenero());
-		usuario.setEmail(txtEmail.getText());
-		usuario.setSenha(txtSenha.getPassword().toString());
-		//setImagem???
-		
-		this.usuarioService.cadastrarUsuario(usuario);
-		
-		}catch(ParseException | SQLException | IOException e) {
-			 JOptionPane.showMessageDialog(this, "Não foi possível carregar a imagem", "Erro", JOptionPane.ERROR_MESSAGE);
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			Usuario usuario = new Usuario();
+
+			usuario.setNomeCompleto(txtNomeCompleto.getText());
+			usuario.setDataNascimento(new java.sql.Date(sdf.parse(this.txtDataNasc.getText()).getTime()));
+			usuario.setGenero(verificarRbGenero());
+			usuario.setEmail(txtEmail.getText());
+			usuario.setImagemPerfil(converterIconParaBytes(lblImagemPerfil.getIcon()));
+			usuario.setNomeUsuario(txtNomeUsuario.getText());
+			usuario.setSenha(txtSenha.getPassword().toString());
+
+			usuarioService.cadastrarUsuario(usuario);
+
+			JOptionPane.showMessageDialog(this, "Cadastro realizado com sucesso!", "Sucesso!",
+					JOptionPane.INFORMATION_MESSAGE);
+			this.dispose();
+			new InicioWindow().setVisible(true);
+
+		} catch (ParseException | SQLException | IOException e) {
+			JOptionPane.showMessageDialog(this, "Erro ao realizar cadastro", "Erro", JOptionPane.ERROR_MESSAGE);
 		}
-		
+
 	}
-	
+
+	public void editarUsuario(InicioWindow inicio) {
+		btnCadastrar.setText("Atualizar");
+		lblTitulo.setText("Atualizar Perfil");
+
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			Usuario usuario = new Usuario();
+
+			usuario.setNomeCompleto(txtNomeCompleto.getText());
+			usuario.setDataNascimento(new java.sql.Date(sdf.parse(this.txtDataNasc.getText()).getTime()));
+			usuario.setGenero(verificarRbGenero());
+			usuario.setEmail(txtEmail.getText());
+			usuario.setImagemPerfil(converterIconParaBytes(lblImagemPerfil.getIcon()));
+			usuario.setNomeUsuario(txtNomeUsuario.getText());
+			usuario.setSenha(txtSenha.getPassword().toString());
+
+			this.usuarioService.cadastrarUsuario(usuario);
+
+			JOptionPane.showMessageDialog(this, "Cadastro realizado com sucesso!", "Sucesso!",
+					JOptionPane.INFORMATION_MESSAGE);
+			this.dispose();
+			new InicioWindow().setVisible(true);
+
+		} catch (ParseException | SQLException | IOException e) {
+			JOptionPane.showMessageDialog(this, "Erro ao realizar cadastro", "Erro", JOptionPane.ERROR_MESSAGE);
+		}
+
+	}
+
+	private byte[] converterIconParaBytes(Icon icon) throws IOException {
+
+		Image image = ((ImageIcon) icon).getImage();
+
+		BufferedImage bufferedImage = new BufferedImage(image.getWidth(null), image.getHeight(null),
+				BufferedImage.TYPE_INT_ARGB);
+		bufferedImage.getGraphics().drawImage(image, 0, 0, null);
+
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			ImageIO.write(bufferedImage, "png", baos);
+			return baos.toByteArray();
+		}
+	}
 
 	private void selecionarImagem() {
 		JFileChooser fileChooser = new JFileChooser();
@@ -109,9 +157,9 @@ public class CadastrarWindow extends JFrame {
 	private void mostrarImagem(File file) {
 		try {
 			ImageIcon imageIcon = new ImageIcon(file.getAbsolutePath());
-			Image image = imageIcon.getImage().getScaledInstance(lblImagemPerfil.getWidth(),
-					lblImagemPerfil.getHeight(), Image.SCALE_SMOOTH);
-			lblImagemPerfil.setIcon(new ImageIcon(image));
+			Image image = imageIcon.getImage().getScaledInstance(130, 130, Image.SCALE_SMOOTH);
+			imageIcon.setImage(image);
+			lblImagemPerfil.setIcon(imageIcon);
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, "Não foi possível carregar a imagem", "Erro",
 					JOptionPane.ERROR_MESSAGE);
@@ -202,7 +250,7 @@ public class CadastrarWindow extends JFrame {
 			}
 		});
 		btnSelecionarImg.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnSelecionarImg.setBounds(258, 219, 110, 23);
+		btnSelecionarImg.setBounds(239, 219, 129, 23);
 		contentPane.add(btnSelecionarImg);
 
 		lblEmail = new JLabel("Email");
@@ -255,13 +303,13 @@ public class CadastrarWindow extends JFrame {
 		separator = new JSeparator();
 		separator.setBounds(10, 41, 385, 2);
 		contentPane.add(separator);
-		
+
 		painelImagemPerfil = new JPanel();
-		painelImagemPerfil.setBounds(258, 89, 110, 110);
+		painelImagemPerfil.setBounds(239, 71, 129, 128);
 		contentPane.add(painelImagemPerfil);
-		
-				lblImagemPerfil = new JLabel("");
-				painelImagemPerfil.add(lblImagemPerfil);
+
+		lblImagemPerfil = new JLabel("");
+		painelImagemPerfil.add(lblImagemPerfil);
 
 		setLocationRelativeTo(null);
 	}
