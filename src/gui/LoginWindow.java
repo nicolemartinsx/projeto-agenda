@@ -17,6 +17,8 @@ import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import entities.Sessao;
+import entities.Usuario;
 import service.UsuarioService;
 
 public class LoginWindow extends JFrame {
@@ -32,7 +34,7 @@ public class LoginWindow extends JFrame {
 	private JLabel lblLogin;
 	private JSeparator separator;
 
-	private UsuarioService usuarioService;
+	private UsuarioService usuarioService = new UsuarioService();;
 
 	public LoginWindow() {
 		initComponents();
@@ -41,23 +43,25 @@ public class LoginWindow extends JFrame {
 	private void realizarLogin() {
 		
 		try {
-			int teste = usuarioService.realizarLogin(txtNomeUsuario.getText(), txtSenha.getPassword().toString());
-			if(teste==0) {
+			Usuario usuario = usuarioService.realizarLogin(txtNomeUsuario.getText(), String.valueOf(txtSenha.getPassword()));
+			if(usuario == null) {
 				JOptionPane.showMessageDialog(null, "Usuário ou senha incorretos", "Erro", JOptionPane.ERROR_MESSAGE);
 				txtNomeUsuario.setText(null);
 				txtSenha.setText(null);
 			}else {
 				this.dispose();
-				new InicioWindow();
+				new InicioWindow().setVisible(true);
+				Sessao.setUsuario(usuario);
 			}
 		} catch (SQLException | IOException e) {
+			System.out.println(e.getMessage());
 			JOptionPane.showMessageDialog(null, "Erro ao realizar login", "Erro", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	
 	private void abrirCadastrar() {
 		this.dispose();
-		new CadastrarWindow();
+		new CadastrarWindow().setVisible(true);
 	}
 
 	private void initComponents() {

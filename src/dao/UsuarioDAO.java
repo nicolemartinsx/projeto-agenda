@@ -38,20 +38,38 @@ public class UsuarioDAO {
 		}
 	}
 
-	public int realizarLogin(String nomeUsuario, String senha) throws SQLException {
+	public Usuario realizarLogin(String nomeUsuario, String senha) throws SQLException {
+
 		PreparedStatement st = null;
+		ResultSet rs = null;
 
 		try {
-			st = conn.prepareStatement("select from usuario where nome_usuario = ? and senha = ?");
+			st = conn.prepareStatement("select * from usuario where nome_usuario = ? and senha = ?");
 			st.setString(1, nomeUsuario);
 			st.setString(2, senha);
 
-			int linhasManipuladas = st.executeUpdate();
+			rs = st.executeQuery();
 
-			return linhasManipuladas;
+			if (rs.next()) {
+				Usuario usuario = new Usuario();
+
+				usuario.setIdUsuario(rs.getInt("id"));
+				usuario.setNomeCompleto(rs.getString("nome_completo"));
+				usuario.setDataNascimento(rs.getDate("data_nascimento"));
+				usuario.setGenero(rs.getString("genero"));
+				usuario.setImagemPerfil(rs.getBytes("imagem_perfil"));
+				usuario.setEmail(rs.getString("email"));
+				usuario.setNomeUsuario(rs.getString("nome_usuario"));
+				usuario.setSenha(rs.getString("senha"));
+
+				return usuario;
+			}
+
+			return null;
 
 		} finally {
 			BancoDados.finalizarStatement(st);
+			BancoDados.finalizarResultSet(rs);
 			BancoDados.desconectar();
 		}
 	}
@@ -62,7 +80,7 @@ public class UsuarioDAO {
 
 		try {
 			st = conn.prepareStatement(
-					"update usuario set nome_completo=?, data_nascimento=?, genero=?, imagem_perfil=?, email=?, nome_usuario=?, senha=?");
+					"update usuario set nome_completo=?, data_nascimento=?, genero=?, imagem_perfil=?, email=?, nome_usuario=?, senha=? where id=?");
 			st.setString(1, usuario.getNomeCompleto());
 			st.setDate(2, new Date(usuario.getDataNascimento().getTime()));
 			st.setString(3, usuario.getGenero());
@@ -70,6 +88,7 @@ public class UsuarioDAO {
 			st.setString(5, usuario.getEmail());
 			st.setString(6, usuario.getNomeUsuario());
 			st.setString(7, usuario.getSenha());
+			st.setInt(8, usuario.getIdUsuario());
 
 			st.executeUpdate();
 
@@ -79,14 +98,14 @@ public class UsuarioDAO {
 		}
 	}
 
-	public int excluirUsuario(String nomeUsuario) throws SQLException {
+	public int excluirUsuario(int id) throws SQLException {
 		PreparedStatement st = null;
 
 		try {
 
-			st = conn.prepareStatement("delete from usuario where nome_usuario = ?");
+			st = conn.prepareStatement("delete from usuario where id = ?");
 
-			st.setString(1, nomeUsuario);
+			st.setInt(1, id);
 
 			int linhasManipuladas = st.executeUpdate();
 
