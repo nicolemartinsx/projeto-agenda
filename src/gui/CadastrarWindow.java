@@ -220,13 +220,15 @@ public class CadastrarWindow extends JFrame {
 	private void recuperarUsuario() {
 		try {
 			if (Sessao.getUsuario() != null) {
+				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+				
 				this.setTitle("EDITAR");
 				this.lblTitulo.setText("EDITAR USUÁRIO");
 				this.btnCadastrar.setText("Salvar");
 				this.btnExcluir.setVisible(true);
 				this.btnExcluir.setEnabled(true);
 				this.txtNomeCompleto.setText(Sessao.getUsuario().getNomeCompleto());
-				//this.txtDataNasc.setText
+				this.txtDataNasc.setValue(sdf.format(Sessao.getUsuario().getDataNascimento()));
 				this.txtEmail.setText(Sessao.getUsuario().getEmail());
 				this.txtNomeUsuario.setText(Sessao.getUsuario().getNomeCompleto());
 				this.txtSenha.setText(Sessao.getUsuario().getSenha());
