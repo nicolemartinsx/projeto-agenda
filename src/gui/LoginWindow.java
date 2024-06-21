@@ -61,7 +61,7 @@ public class LoginWindow extends JFrame {
 	
 	private void abrirCadastrar() {
 		this.dispose();
-		new CadastrarWindow().setVisible(true);
+		new CadastrarUsuarioWindow().setVisible(true);
 	}
 
 	private void initComponents() {

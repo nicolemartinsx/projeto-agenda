@@ -40,7 +40,7 @@ import entities.Sessao;
 import entities.Usuario;
 import service.UsuarioService;
 
-public class CadastrarWindow extends JFrame {
+public class CadastrarUsuarioWindow extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -70,7 +70,7 @@ public class CadastrarWindow extends JFrame {
 	private JTextField txtNomeUsuario;
 	private JButton btnVoltar;
 
-	public CadastrarWindow() {
+	public CadastrarUsuarioWindow() {
 		criarMascara();
 		initComponents();
 		recuperarUsuario();
@@ -178,16 +178,21 @@ public class CadastrarWindow extends JFrame {
 
 	private void excluirUsuario() {
 		try {
-			int result = usuarioService.excluirUsuario(Sessao.getUsuario().getIdUsuario());
+			int op = JOptionPane.showConfirmDialog(null, "Deseja excluir sua conta?");
 
-			if (result == 1) {
-				JOptionPane.showMessageDialog(this, "Exclusão realizada com sucesso!", "Sucesso!",
-						JOptionPane.INFORMATION_MESSAGE);
-				this.dispose();
-				new LoginWindow().setVisible(true);
-				Sessao.setUsuario(null);
-			} else {
-				JOptionPane.showMessageDialog(this, "Erro ao excluir usuário", "Erro", JOptionPane.ERROR_MESSAGE);
+			if (op == 0) {
+				int result = usuarioService.excluirUsuario(Sessao.getUsuario().getIdUsuario());
+
+				if (result == 1) {
+					JOptionPane.showMessageDialog(this, "Exclusão realizada com sucesso!", "Sucesso!",
+							JOptionPane.INFORMATION_MESSAGE);
+					this.dispose();
+					new LoginWindow().setVisible(true);
+					Sessao.setUsuario(null);
+
+				} else {
+					JOptionPane.showMessageDialog(this, "Erro ao excluir usuário", "Erro", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		} catch (SQLException | IOException e) {
 			JOptionPane.showMessageDialog(this, "Erro ao excluir usuário", "Erro", JOptionPane.ERROR_MESSAGE);
@@ -211,7 +216,7 @@ public class CadastrarWindow extends JFrame {
 			JOptionPane.showMessageDialog(this, "Erro ao criar máscara de data", "Erro", JOptionPane.ERROR_MESSAGE);
 		}
 	}
-	
+
 	private void voltar() {
 		this.dispose();
 		new InicioWindow().setVisible(true);
@@ -221,7 +226,7 @@ public class CadastrarWindow extends JFrame {
 		try {
 			if (Sessao.getUsuario() != null) {
 				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-				
+
 				this.setTitle("EDITAR");
 				this.lblTitulo.setText("EDITAR USUÁRIO");
 				this.btnCadastrar.setText("Salvar");
@@ -384,19 +389,19 @@ public class CadastrarWindow extends JFrame {
 		btnExcluir.setBackground(UIManager.getColor("Button.background"));
 		btnExcluir.setBounds(222, 482, 129, 23);
 		contentPane.add(btnExcluir);
-		
+
 		txtEmail = new JTextField();
 		txtEmail.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		txtEmail.setBounds(20, 209, 155, 20);
 		contentPane.add(txtEmail);
 		txtEmail.setColumns(10);
-		
+
 		txtNomeUsuario = new JTextField();
 		txtNomeUsuario.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		txtNomeUsuario.setBounds(20, 266, 155, 20);
 		contentPane.add(txtNomeUsuario);
 		txtNomeUsuario.setColumns(10);
-		
+
 		btnVoltar = new JButton("Voltar");
 		btnVoltar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

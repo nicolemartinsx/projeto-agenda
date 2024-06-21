@@ -3,7 +3,6 @@ package entities;
 public class Agenda {
 
 	private int idAgenda;
-
 	private String nome;
 	private String descricao;
 
@@ -35,4 +34,10 @@ public class Agenda {
 		this.descricao = descricao;
 	}
 
+	@Override
+	public String toString() {
+		return "Agenda [idAgenda=" + idAgenda + ", nome=" + nome + ", descricao=" + descricao + "]";
+	}
+
+	
 }

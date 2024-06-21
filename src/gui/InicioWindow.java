@@ -30,7 +30,7 @@ public class InicioWindow extends JFrame {
 
 	private void editarUsuario() {
 		this.dispose();
-		new CadastrarWindow().setVisible(true);
+		new CadastrarUsuarioWindow().setVisible(true);
 	}
 
 	private void abrirAgenda() {
