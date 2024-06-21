@@ -17,7 +17,9 @@ CREATE TABLE usuario (
 CREATE TABLE agenda (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
-    descricao VARCHAR(100)
+    descricao VARCHAR(100),
+    usuario_id INT,
+    FOREIGN KEY (usuario_id) REFERENCES usuario(id)
 );
 
 CREATE TABLE compromisso (
