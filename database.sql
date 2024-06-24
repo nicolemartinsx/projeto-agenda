@@ -19,7 +19,7 @@ CREATE TABLE agenda (
     nome VARCHAR(100) NOT NULL,
     descricao VARCHAR(100),
     usuario_id INT,
-    FOREIGN KEY (usuario_id) REFERENCES usuario(id)
+    FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE
 );
 
 CREATE TABLE compromisso (
@@ -32,14 +32,14 @@ CREATE TABLE compromisso (
     notificacao DATETIME,
     usuario_id INT,
     agenda_id INT,
-    FOREIGN KEY (usuario_id) REFERENCES usuario(id),
-    FOREIGN KEY (agenda_id) REFERENCES agenda(id)
+    FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE, 
+    FOREIGN KEY (agenda_id) REFERENCES agenda(id) ON DELETE CASCADE
 );
 
 CREATE TABLE compromisso_convidados (
     compromisso_id INT,
     usuario_id INT,
     PRIMARY KEY (compromisso_id, usuario_id),
-    FOREIGN KEY (compromisso_id) REFERENCES compromisso(id),
-    FOREIGN KEY (usuario_id) REFERENCES usuario(id)
+    FOREIGN KEY (compromisso_id) REFERENCES compromisso(id) ON DELETE CASCADE,
+    FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE
 );
