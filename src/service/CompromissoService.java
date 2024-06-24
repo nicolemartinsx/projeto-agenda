@@ -14,9 +14,9 @@ import entities.Compromisso;
 public class CompromissoService {
 	
 	
-	public List<Compromisso> buscarCompromissos(int idUsuario) throws SQLException, IOException {
+	public List<Compromisso> buscarCompromissos(int idAgenda) throws SQLException, IOException {
 		Connection conn = BancoDados.conectar();
-		return new CompromissoDAO(conn).buscarCompromissos(idUsuario);
+		return new CompromissoDAO(conn).buscarCompromissos(idAgenda);
 	}
 	
 	public Compromisso buscarCompromisso(int idCompromisso) throws SQLException, IOException {

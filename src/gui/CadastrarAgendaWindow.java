@@ -35,12 +35,12 @@ public class CadastrarAgendaWindow extends JDialog {
 	}
 
 	public void preencherCampos(Agenda agenda) {
+		this.agendaAtual = agenda;
 		txtNome.setText(agenda.getNome());
 		txtDescricao.setText(agenda.getDescricao());
-		this.agendaAtual = agenda;
 	}
 
-	private void cadastrarAgenda() {
+	private void cadastrarOuEditarAgenda() {
 		try {
 			Agenda agenda = new Agenda();
 
@@ -109,7 +109,7 @@ public class CadastrarAgendaWindow extends JDialog {
 		btnCadastrar = new JButton("Salvar");
 		btnCadastrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cadastrarAgenda();
+				cadastrarOuEditarAgenda();
 			}
 		});
 		btnCadastrar.setFont(new Font("Tahoma", Font.PLAIN, 14));
