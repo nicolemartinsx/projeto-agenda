@@ -5,8 +5,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -44,45 +47,53 @@ public class CompromissoWindow extends JFrame {
 	private CompromissoService compromissoService = new CompromissoService();
 
 	public CompromissoWindow(Agenda agenda) {
-		initComponents();
 		this.agenda = agenda;
+		initComponents();
+		buscarCompromissos();
 	}
 
 	private void cadastrarCompromisso() {
 		this.dispose();
 		new CadastrarCompromissoWindow(agenda).setVisible(true);
+		buscarCompromissos();
 	}
 
 	private void editarCompromisso() {
 		this.dispose();
 		CadastrarCompromissoWindow editar = new CadastrarCompromissoWindow(agenda);
-		editar.preencherCampos(this.buscarCompromisso((int) tblCompromissos.getValueAt(tblCompromissos.getSelectedRow(), tblCompromissos.getColumnModel().getColumnIndex("ID"))));
+		editar.preencherCampos(this.buscarCompromisso((int) tblCompromissos.getValueAt(tblCompromissos.getSelectedRow(),
+				tblCompromissos.getColumnModel().getColumnIndex("ID"))));
+		editar.setVisible(true);
 		buscarCompromissos();
 	}
-	
+
 	private Compromisso buscarCompromisso(int idCompromisso) {
 		try {
 			return compromissoService.buscarCompromisso(idCompromisso);
 
 		} catch (SQLException | IOException e) {
-			JOptionPane.showMessageDialog(null, "Erro ao obter compromissos", "Erro", JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Erro ao obter compromisso", "Erro", JOptionPane.ERROR_MESSAGE);
 		}
 		return null;
 	}
 
 	private void buscarCompromissos() {
-
-		List<Compromisso> compromissos = new ArrayList<>();
-
 		try {
-			compromissos = compromissoService.buscarCompromissos(Sessao.getUsuario().getIdUsuario());
+			List<Compromisso> compromissos = new ArrayList<>();
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+			
+			compromissos = compromissoService.buscarCompromissos(this.agenda.getIdAgenda());
 			DefaultTableModel modelo = (DefaultTableModel) tblCompromissos.getModel();
 			modelo.fireTableDataChanged();
 			modelo.setRowCount(0);
 
 			for (Compromisso compromisso : compromissos) {
+				String dataInicio = sdf.format(compromisso.getDataInicio());
+				String dataTermino = sdf.format(compromisso.getDataTermino());
+				
 				modelo.addRow(new Object[] { compromisso.getIdCompromisso(), compromisso.getTitulo(),
-						compromisso.getDescricao(), compromisso.getDataInicio(), compromisso.getDataTermino(),
+						compromisso.getDescricao(), dataInicio, dataTermino,
 						compromisso.getLocal() });
 			}
 
@@ -90,18 +101,25 @@ public class CompromissoWindow extends JFrame {
 			JOptionPane.showMessageDialog(null, "Erro ao obter compromissos", "Erro", JOptionPane.ERROR_MESSAGE);
 		}
 	}
+	
+	private void visualizarConvidados() {
+		Compromisso compromisso = this.buscarCompromisso((int) tblCompromissos.getValueAt(tblCompromissos.getSelectedRow(), tblCompromissos.getColumnModel().getColumnIndex("ID")));
+		String convidados = "Convidados: ";
+		for(String convidado : compromisso.getConvidados()) {
+			convidados = convidados+"\n"+convidado;
+		}
+		JOptionPane.showMessageDialog(null, convidados, "Convidados", JOptionPane.DEFAULT_OPTION);
+	}
 
 	private void excluirCompromisso() {
 		try {
-			int op = JOptionPane.showConfirmDialog(null, "Deseja excluir ese compromisso?", "Confirmar exclusão",
-					JOptionPane.YES_NO_OPTION);
+			int op = JOptionPane.showConfirmDialog(null, "Deseja excluir esse compromisso?", "Confirmar exclusão", JOptionPane.YES_NO_OPTION);
 			if (op == 0) {
 				op = compromissoService
 						.excluirCompromisso((Integer) tblCompromissos.getValueAt(tblCompromissos.getSelectedRow(),
 								tblCompromissos.getColumnModel().getColumnIndex("ID")));
 				if (op != 0) {
-					JOptionPane.showMessageDialog(this, "Agenda excluida!", "Sucesso!",
-							JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(this, "Compromisso excluido!", "Sucesso!", JOptionPane.INFORMATION_MESSAGE);
 				}
 				buscarCompromissos();
 			}
@@ -141,6 +159,7 @@ public class CompromissoWindow extends JFrame {
 		btnConvidados = new JButton("Convidados");
 		btnConvidados.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				visualizarConvidados();
 			}
 		});
 		btnConvidados.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -178,6 +197,12 @@ public class CompromissoWindow extends JFrame {
 		contentPane.add(btnExcluir);
 
 		btnVoltar = new JButton("Voltar");
+		btnVoltar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+				new AgendaWindow().setVisible(true);
+			}
+		});
 		btnVoltar.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnVoltar.setBounds(867, 331, 130, 23);
 		contentPane.add(btnVoltar);

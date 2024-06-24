@@ -11,7 +11,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.swing.AbstractListModel;
 import javax.swing.DefaultComboBoxModel;
@@ -68,6 +70,7 @@ public class CadastrarCompromissoWindow extends JFrame {
 	private JTextArea txtDescricao;
 
 	private Agenda agenda;
+	private Compromisso compromissoAtual;
 	private CompromissoService compromissoService = new CompromissoService();
 	private UsuarioService usuarioService = new UsuarioService();
 
@@ -78,61 +81,38 @@ public class CadastrarCompromissoWindow extends JFrame {
 		this.agenda = agenda;
 	}
 
-	private void cadastrarCompromisso() {
+	private void cadastrarOuEditarCompromisso() {
 		try {
 
 			Compromisso compromisso = new Compromisso();
 
 			compromisso.setTitulo(txtTitulo.getText());
 			compromisso.setDescricao(txtDescricao.getText());
-			compromisso.setDataInicio(txtDataInicio.getText() + " " + txtHoraInicio.getText());
-			compromisso.setDataTermino(txtDataFinal.getText() + " " + txtHoraFinal.getText());
+			compromisso.setDataInicio(converterTimestamp(txtDataInicio.getText(), txtHoraInicio.getText()));
+			compromisso.setDataTermino(converterTimestamp(txtDataFinal.getText(), txtHoraFinal.getText()));
 			compromisso.setAgenda(agenda);
 			compromisso.setLocal(txtLocal.getText());
 			compromisso.setConvidados(listaConvidados.getSelectedValuesList());
-			compromisso.setNotificacao(verificarNotificacao(txtDataInicio.getText(), txtHoraInicio.getText()));
+			compromisso.setNotificacao(verificarNotificacao(converterTimestamp(txtDataInicio.getText(), txtHoraInicio.getText())));
 
-			compromissoService.cadastrarCompromisso(compromisso, Sessao.getUsuario().getIdUsuario());
-
-			JOptionPane.showMessageDialog(this, "Cadastro realizado com sucesso!", "Sucesso!",
-					JOptionPane.INFORMATION_MESSAGE);
+			if (this.compromissoAtual == null) {
+				compromissoService.cadastrarCompromisso(compromisso, Sessao.getUsuario().getIdUsuario());
+			} else {
+				compromisso.setIdCompromisso(compromissoAtual.getIdCompromisso());
+				compromissoService.editarCompromisso(compromisso, Sessao.getUsuario().getIdUsuario());
+			}
+			JOptionPane.showMessageDialog(this, "Compromisso salvo com sucesso!", "Sucesso!", JOptionPane.INFORMATION_MESSAGE);
 			this.dispose();
 			new CompromissoWindow(agenda).setVisible(true);
 
 		} catch (SQLException | IOException e) {
-			JOptionPane.showMessageDialog(this, "Erro ao realizar cadastro", "Erro", JOptionPane.ERROR_MESSAGE);
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, "Erro ao salvar compromisso", "Erro", JOptionPane.ERROR_MESSAGE);
 		}
 
 	}
 
-	private void editarCompromisso() {
-		try {
-
-			Compromisso compromisso = new Compromisso();
-			Timestamp inicio = txtDataInicio.getText() + " " + txtHoraInicio.getText();
-			Timestamp final = txtDataFinal.getText() + " " + txtHoraFinal.getText();
-
-			compromisso.setTitulo(txtTitulo.getText());
-			compromisso.setDescricao(txtDescricao.getText());
-			compromisso.setDataInicio(inicio);
-			compromisso.setDataTermino(final);
-			compromisso.setAgenda(agenda);
-			compromisso.setLocal(txtLocal.getText());
-			compromisso.setConvidados(listaConvidados.getSelectedValuesList());
-			compromisso.setNotificacao(verificarNotificacao(txtDataInicio.getText(), txtHoraInicio.getText()));
-
-			compromissoService.editarCompromisso(compromisso, Sessao.getUsuario().getIdUsuario());
-
-			JOptionPane.showMessageDialog(this, "Cadastro realizado com sucesso!", "Sucesso!",
-					JOptionPane.INFORMATION_MESSAGE);
-			this.dispose();
-			new CompromissoWindow(agenda).setVisible(true);
-
-		} catch (SQLException | IOException e) {
-			JOptionPane.showMessageDialog(this, "Erro ao realizar cadastro", "Erro", JOptionPane.ERROR_MESSAGE);
-		}
-	}
-	
 	private void buscarUsuarios() {
 		try {
 			DefaultListModel model = new DefaultListModel();
@@ -150,27 +130,32 @@ public class CadastrarCompromissoWindow extends JFrame {
 		}
 	}
 
-	private Timestamp verificarNotificacao(String dataInicio, String horaInicio) {
+	private Timestamp converterTimestamp(String um, String dois) {
 		try {
-			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
-			Date date = sdf.parse(dataInicio + " " + horaInicio);
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+			sdf.setTimeZone(TimeZone.getTimeZone("America/Sao_Paulo"));
+			Date date = sdf.parse(um + " " + dois);
 			Instant ins = date.toInstant();
 
-			if (cbNotificacao.getSelectedIndex() == 1) {
-				ins.minusSeconds(900);
-			} else if (cbNotificacao.getSelectedIndex() == 2) {
-				ins.minusSeconds(1800);
-			} else {
-				ins.minusSeconds(3600);
-			}
-			
 			return Timestamp.from(ins);
 
 		} catch (ParseException e) {
-			JOptionPane.showMessageDialog(this, "Erro ao salvar dados de notificação", "Erro",
-					JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Erro ao recuperar convidados", "Erro", JOptionPane.ERROR_MESSAGE);
 		}
 		return null;
+	}
+
+	private Timestamp verificarNotificacao(Timestamp data) {
+		Instant ins = data.toInstant();
+		if (cbNotificacao.getSelectedIndex() == 1) {
+			ins.minusSeconds(900);
+		} else if (cbNotificacao.getSelectedIndex() == 2) {
+			ins.minusSeconds(1800);
+		} else {
+			ins.minusSeconds(3600);
+		}
+		
+		return Timestamp.from(ins);
 	}
 
 	private void criarMascara() {
@@ -188,7 +173,17 @@ public class CadastrarCompromissoWindow extends JFrame {
 		txtTitulo.setText(compromisso.getTitulo());
 		txtDescricao.setText(compromisso.getDescricao());
 		txtLocal.setText(compromisso.getLocal());
-		//adicionar os convidados selecionados
+		this.compromissoAtual = compromisso;
+		
+		int[] indices = new int[compromisso.getConvidados().size()];
+        int counter = 0;
+		for(int i=0; i<listaConvidados.getModel().getSize(); i++) {
+			if(compromisso.getConvidados().contains(listaConvidados.getModel().getElementAt(i))) {
+				indices[counter] = i;
+                counter++;
+			}
+		}
+		listaConvidados.setSelectedIndices(indices);
 	}
 
 	private void initComponents() {
@@ -237,7 +232,7 @@ public class CadastrarCompromissoWindow extends JFrame {
 		btnCadastrar = new JButton("Cadastrar");
 		btnCadastrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cadastrarCompromisso();
+				cadastrarOuEditarCompromisso();
 			}
 		});
 		btnCadastrar.setForeground(Color.BLACK);
@@ -336,6 +331,7 @@ public class CadastrarCompromissoWindow extends JFrame {
 		contentPane.add(lblDescricao);
 
 		txtDescricao = new JTextArea();
+		txtDescricao.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		txtDescricao.setBounds(20, 261, 326, 64);
 		contentPane.add(txtDescricao);
 
