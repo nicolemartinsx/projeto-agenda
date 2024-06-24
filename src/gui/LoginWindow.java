@@ -68,7 +68,7 @@ public class LoginWindow extends JFrame {
 		setResizable(false);
 		setTitle("LOGIN");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 403, 306);
+		setBounds(100, 100, 369, 278);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -76,23 +76,23 @@ public class LoginWindow extends JFrame {
 		contentPane.setLayout(null);
 
 		lblNomeUsuario = new JLabel("Nome de Usuário");
-		lblNomeUsuario.setBounds(54, 72, 284, 14);
+		lblNomeUsuario.setBounds(33, 53, 284, 14);
 		lblNomeUsuario.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		contentPane.add(lblNomeUsuario);
 
 		lblSenha = new JLabel("Senha");
-		lblSenha.setBounds(54, 131, 284, 14);
+		lblSenha.setBounds(33, 112, 284, 14);
 		lblSenha.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		contentPane.add(lblSenha);
 
 		txtNomeUsuario = new JTextField();
-		txtNomeUsuario.setBounds(54, 89, 284, 20);
+		txtNomeUsuario.setBounds(33, 70, 284, 20);
 		txtNomeUsuario.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		contentPane.add(txtNomeUsuario);
 		txtNomeUsuario.setColumns(10);
 
 		txtSenha = new JPasswordField();
-		txtSenha.setBounds(54, 147, 284, 20);
+		txtSenha.setBounds(33, 128, 284, 20);
 		txtSenha.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		contentPane.add(txtSenha);
 
@@ -102,7 +102,7 @@ public class LoginWindow extends JFrame {
 				abrirCadastrar();
 			}
 		});
-		btnCadastrar.setBounds(54, 205, 115, 23);
+		btnCadastrar.setBounds(33, 177, 115, 23);
 		btnCadastrar.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		contentPane.add(btnCadastrar);
 
@@ -112,17 +112,17 @@ public class LoginWindow extends JFrame {
 				realizarLogin();
 			}
 		});
-		btnLogin.setBounds(239, 207, 99, 23);
+		btnLogin.setBounds(218, 179, 99, 23);
 		btnLogin.setFont(new Font("Tahoma", Font.BOLD, 14));
 		contentPane.add(btnLogin);
 
 		lblLogin = new JLabel("LOGIN");
-		lblLogin.setBounds(20, 11, 219, 14);
-		lblLogin.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
+		lblLogin.setBounds(10, 11, 219, 14);
+		lblLogin.setFont(new Font("Tahoma", Font.BOLD, 14));
 		contentPane.add(lblLogin);
 
 		separator = new JSeparator();
-		separator.setBounds(20, 36, 339, 2);
+		separator.setBounds(10, 28, 333, 2);
 		contentPane.add(separator);
 
 		setLocationRelativeTo(null);

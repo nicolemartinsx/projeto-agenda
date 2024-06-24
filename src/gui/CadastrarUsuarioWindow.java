@@ -33,7 +33,6 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.text.Caret;
 import javax.swing.text.MaskFormatter;
 
 import entities.Sessao;
@@ -61,14 +60,14 @@ public class CadastrarUsuarioWindow extends JFrame {
 	private JLabel lblTitulo;
 	private JSeparator separator;
 	private JLabel lblImagemPerfil;
-
-	private MaskFormatter mascaraData;
 	private JPanel painelImagemPerfil;
-	private UsuarioService usuarioService = new UsuarioService();
 	private JButton btnExcluir;
 	private JTextField txtEmail;
 	private JTextField txtNomeUsuario;
 	private JButton btnVoltar;
+
+	private MaskFormatter mascaraData;
+	private UsuarioService usuarioService = new UsuarioService();
 
 	public CadastrarUsuarioWindow() {
 		criarMascara();
@@ -362,12 +361,12 @@ public class CadastrarUsuarioWindow extends JFrame {
 		contentPane.add(btnCadastrar);
 
 		lblTitulo = new JLabel("CADASTRAR NOVO USUÁRIO");
-		lblTitulo.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
-		lblTitulo.setBounds(20, 23, 363, 20);
+		lblTitulo.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblTitulo.setBounds(20, 11, 340, 20);
 		contentPane.add(lblTitulo);
 
 		separator = new JSeparator();
-		separator.setBounds(20, 41, 351, 2);
+		separator.setBounds(20, 30, 340, 2);
 		contentPane.add(separator);
 
 		painelImagemPerfil = new JPanel();

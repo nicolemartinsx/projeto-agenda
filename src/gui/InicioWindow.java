@@ -19,7 +19,6 @@ public class InicioWindow extends JFrame {
 	private JPanel contentPane;
 	private JButton btnEditarPerfil;
 	private JButton btnAgenda;
-	private JButton btnCompromisso;
 	private JButton btnConvites;
 	private JButton btnLogout;
 
@@ -48,7 +47,7 @@ public class InicioWindow extends JFrame {
 		setResizable(false);
 		setTitle("HOME");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 259, 272);
+		setBounds(100, 100, 258, 243);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -56,7 +55,7 @@ public class InicioWindow extends JFrame {
 		contentPane.setLayout(null);
 
 		JLabel lblTitulo = new JLabel("BEM VINDO");
-		lblTitulo.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
+		lblTitulo.setFont(new Font("Tahoma", Font.BOLD, 14));
 		lblTitulo.setBounds(10, 11, 223, 20);
 		contentPane.add(lblTitulo);
 
@@ -74,11 +73,6 @@ public class InicioWindow extends JFrame {
 		btnAgenda.setBounds(52, 86, 130, 23);
 		contentPane.add(btnAgenda);
 
-		btnCompromisso = new JButton("Compromissos");
-		btnCompromisso.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnCompromisso.setBounds(52, 120, 130, 23);
-		contentPane.add(btnCompromisso);
-
 		btnEditarPerfil = new JButton("Editar Perfil");
 		btnEditarPerfil.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -91,7 +85,7 @@ public class InicioWindow extends JFrame {
 
 		btnConvites = new JButton("Convites");
 		btnConvites.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnConvites.setBounds(52, 154, 130, 23);
+		btnConvites.setBounds(52, 120, 130, 23);
 		contentPane.add(btnConvites);
 		
 		btnLogout = new JButton("Logout");
@@ -101,7 +95,7 @@ public class InicioWindow extends JFrame {
 			}
 		});
 		btnLogout.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnLogout.setBounds(52, 188, 130, 23);
+		btnLogout.setBounds(52, 154, 130, 23);
 		contentPane.add(btnLogout);
 
 		setLocationRelativeTo(null);
