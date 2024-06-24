@@ -1,5 +1,6 @@
 package entities;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public class Compromisso {
@@ -7,12 +8,12 @@ public class Compromisso {
 	private int idCompromisso;
 	private String titulo;
 	private String descricao;
-	private String dataInicio;
-	private String dataTermino;
+	private Timestamp dataInicio;
+	private Timestamp dataTermino;
 	private String local;
 	private Agenda agenda;
-	private List<Usuario> convidados;
-	private String notificacao;
+	private List<String> convidados;
+	private Timestamp notificacao;
 
 	public Compromisso() {
 		
@@ -42,19 +43,19 @@ public class Compromisso {
 		this.descricao = descricao;
 	}
 
-	public String getDataInicio() {
+	public Timestamp getDataInicio() {
 		return dataInicio;
 	}
 
-	public void setDataInicio(String dataInicio) {
+	public void setDataInicio(Timestamp dataInicio) {
 		this.dataInicio = dataInicio;
 	}
 
-	public String getDataTermino() {
+	public Timestamp getDataTermino() {
 		return dataTermino;
 	}
 
-	public void setDataTermino(String dataTermino) {
+	public void setDataTermino(Timestamp dataTermino) {
 		this.dataTermino = dataTermino;
 	}
 
@@ -74,19 +75,19 @@ public class Compromisso {
 		this.agenda = agenda;
 	}
 
-	public List<Usuario> getConvidados() {
+	public List<String> getConvidados() {
 		return convidados;
 	}
 
-	public void setConvidados(List<Usuario> convidados) {
+	public void setConvidados(List<String> convidados) {
 		this.convidados = convidados;
 	}
 
-	public String getNotificacao() {
+	public Timestamp getNotificacao() {
 		return notificacao;
 	}
 
-	public void setNotificacao(String notificacao) {
+	public void setNotificacao(Timestamp notificacao) {
 		this.notificacao = notificacao;
 	}
 

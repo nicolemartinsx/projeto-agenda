@@ -1,0 +1,41 @@
+package service;
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+
+import dao.AgendaDAO;
+import dao.BancoDados;
+import dao.CompromissoDAO;
+import entities.Agenda;
+import entities.Compromisso;
+
+public class CompromissoService {
+	
+	
+	public List<Compromisso> buscarCompromissos(int idUsuario) throws SQLException, IOException {
+		Connection conn = BancoDados.conectar();
+		return new CompromissoDAO(conn).buscarCompromissos(idUsuario);
+	}
+	
+	public Compromisso buscarCompromisso(int idCompromisso) throws SQLException, IOException {
+		Connection conn = BancoDados.conectar();
+		return new CompromissoDAO(conn).buscarCompromisso(idCompromisso);
+	}
+	
+	public void cadastrarCompromisso(Compromisso compromisso, int idUsuario) throws SQLException, IOException {
+		Connection conn = BancoDados.conectar();
+		new CompromissoDAO(conn).cadastrarCompromisso(compromisso, idUsuario);
+	}
+	
+	public void editarCompromisso(Compromisso compromisso, int idUsuario) throws SQLException, IOException {
+		Connection conn = BancoDados.conectar();
+		new CompromissoDAO(conn).editarCompromisso(compromisso, idUsuario);
+	}
+	
+	public int excluirCompromisso(int idCompromisso) throws SQLException, IOException {
+		Connection conn = BancoDados.conectar();
+		return new CompromissoDAO(conn).excluirCompromisso(idCompromisso);
+	}
+}
