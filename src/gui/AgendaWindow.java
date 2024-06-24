@@ -36,9 +36,10 @@ public class AgendaWindow extends JFrame {
 	private JSeparator separator;
 	private JTable tblAgendas;
 	private JScrollPane scrollPane;
-
+	private JButton btnAbrir;
+	
 	AgendaService agendaService = new AgendaService();
-
+	
 	public AgendaWindow() {
 		initComponents();
 		buscarAgendas();
@@ -66,8 +67,23 @@ public class AgendaWindow extends JFrame {
 		new CadastrarAgendaWindow().setVisible(true);
 		buscarAgendas();
 	}
+	
+	private void abrirAgenda() {
+		Agenda agenda = this.salvarAgenda();
+		this.dispose();
+		new CompromissoWindow(agenda).setVisible(true);
+	}
 
 	private void editarAgenda() {
+		
+		Agenda agenda = this.salvarAgenda();
+		CadastrarAgendaWindow edicao = new CadastrarAgendaWindow();
+		edicao.preencherCampos(agenda);
+		edicao.setVisible(true);
+		buscarAgendas();
+	}
+	
+	private Agenda salvarAgenda() {
 		Agenda agenda = new Agenda();
 
 		int selecao = tblAgendas.getSelectedRow();
@@ -75,12 +91,8 @@ public class AgendaWindow extends JFrame {
 		agenda.setIdAgenda((int) tblAgendas.getValueAt(selecao, tblAgendas.getColumnModel().getColumnIndex("ID")));
 		agenda.setNome((String) tblAgendas.getValueAt(selecao, tblAgendas.getColumnModel().getColumnIndex("Nome")));
 		agenda.setDescricao(
-				(String) tblAgendas.getValueAt(selecao, tblAgendas.getColumnModel().getColumnIndex("Descricao")));
-
-		CadastrarAgendaWindow edicao = new CadastrarAgendaWindow();
-		edicao.preencherCampos(agenda);
-		edicao.setVisible(true);
-		buscarAgendas();
+				(String) tblAgendas.getValueAt(selecao, tblAgendas.getColumnModel().getColumnIndex("Descrição")));
+		return agenda;
 	}
 
 	private void excluirAgenda() {
@@ -108,7 +120,7 @@ public class AgendaWindow extends JFrame {
 		setResizable(false);
 		setTitle("AGENDAS");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 510, 350);
+		setBounds(100, 100, 653, 416);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -122,7 +134,7 @@ public class AgendaWindow extends JFrame {
 			}
 		});
 		btnCriarAgenda.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnCriarAgenda.setBounds(175, 277, 95, 23);
+		btnCriarAgenda.setBounds(416, 330, 95, 23);
 		contentPane.add(btnCriarAgenda);
 
 		btnEditarAgenda = new JButton("Editar");
@@ -132,7 +144,7 @@ public class AgendaWindow extends JFrame {
 			}
 		});
 		btnEditarAgenda.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnEditarAgenda.setBounds(280, 277, 101, 23);
+		btnEditarAgenda.setBounds(305, 330, 101, 23);
 		contentPane.add(btnEditarAgenda);
 
 		btnExcluirAgenda = new JButton("Excluir");
@@ -142,7 +154,7 @@ public class AgendaWindow extends JFrame {
 			}
 		});
 		btnExcluirAgenda.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnExcluirAgenda.setBounds(391, 277, 95, 23);
+		btnExcluirAgenda.setBounds(200, 330, 95, 23);
 		contentPane.add(btnExcluirAgenda);
 
 		btnVoltar = new JButton("Voltar");
@@ -152,20 +164,20 @@ public class AgendaWindow extends JFrame {
 			}
 		});
 		btnVoltar.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnVoltar.setBounds(10, 277, 89, 23);
+		btnVoltar.setBounds(20, 330, 89, 23);
 		contentPane.add(btnVoltar);
 
 		lblTitulo = new JLabel("AGENDAS");
-		lblTitulo.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
-		lblTitulo.setBounds(10, 11, 223, 20);
+		lblTitulo.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblTitulo.setBounds(20, 11, 223, 20);
 		contentPane.add(lblTitulo);
 
 		separator = new JSeparator();
-		separator.setBounds(10, 29, 474, 2);
+		separator.setBounds(20, 30, 596, 2);
 		contentPane.add(separator);
 
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 42, 476, 213);
+		scrollPane.setBounds(20, 42, 596, 267);
 		contentPane.add(scrollPane);
 
 		tblAgendas = new JTable();
@@ -174,7 +186,7 @@ public class AgendaWindow extends JFrame {
 			new Object[][] {
 			},
 			new String[] {
-				"ID", "Nome", "Descricao"
+				"ID", "Nome", "Descri\u00E7\u00E3o"
 			}
 		) {
 			Class[] columnTypes = new Class[] {
@@ -190,6 +202,16 @@ public class AgendaWindow extends JFrame {
 		tblAgendas.getColumnModel().getColumn(2).setResizable(false);
 		tblAgendas.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		scrollPane.setViewportView(tblAgendas);
+		
+		btnAbrir = new JButton("Abrir");
+		btnAbrir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				abrirAgenda();
+			}
+		});
+		btnAbrir.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnAbrir.setBounds(521, 330, 95, 23);
+		contentPane.add(btnAbrir);
 
 		setLocationRelativeTo(null);
 	}

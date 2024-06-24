@@ -86,6 +86,37 @@ public class AgendaDAO {
 			BancoDados.desconectar();
 		}
 	}
+	
+	public Agenda buscarAgenda(int idAgenda) throws SQLException {
+
+		PreparedStatement st = null;
+		ResultSet rs = null;
+
+		try {
+
+			st = conn.prepareStatement("select * from agenda where id = ? ");
+			st.setInt(1, idAgenda);
+
+			rs = st.executeQuery();
+
+			if (rs.next()) {
+
+				Agenda agenda = new Agenda();
+				
+				agenda.setIdAgenda(rs.getInt("id"));
+				agenda.setNome(rs.getString("nome"));
+				agenda.setDescricao(rs.getString("descricao"));
+				return agenda;
+			}
+			return null;
+
+		} finally {
+
+			BancoDados.finalizarStatement(st);
+			BancoDados.finalizarResultSet(rs);
+			BancoDados.desconectar();
+		}
+	}
 
 	public int excluirAgenda(int idAgenda) throws SQLException {
 
