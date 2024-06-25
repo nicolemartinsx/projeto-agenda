@@ -60,9 +60,10 @@ public class CompromissoDAO {
 
 				for (int convidado : convidados) {
 					st = conn.prepareStatement(
-							"insert into compromisso_convidados (compromisso_id, usuario_id) values (?, ?)");
+							"insert into compromisso_convidados (compromisso_id, usuario_id, convite) values (?, ?, ?)");
 					st.setInt(1, compromisso.getIdCompromisso());
 					st.setInt(2, convidado);
+					st.setInt(3, 0);
 					st.executeUpdate();
 				}
 			}
@@ -112,7 +113,15 @@ public class CompromissoDAO {
 			BancoDados.desconectar();
 		}
 	}
+	
+	public void importarCompromissos() {
+		
+	}
 
+	public void exportarCompromissos() {
+		
+	}
+	
 	public Compromisso buscarCompromisso(int idCompromisso) throws SQLException {
 
 		PreparedStatement st = null;
@@ -139,13 +148,14 @@ public class CompromissoDAO {
 
 			}
 
-			st = conn.prepareStatement("select nome_usuario from compromisso_convidados join usuario on compromisso_convidados.usuario_id = usuario.id where compromisso_id = ?");
+			st = conn.prepareStatement(
+					"select nome_usuario from compromisso_convidados join usuario on compromisso_convidados.usuario_id = usuario.id where compromisso_id = ?");
 			st.setInt(1, idCompromisso);
 
 			rs = st.executeQuery();
 
 			List<String> convidados = new ArrayList<>();
-			while(rs.next()) {
+			while (rs.next()) {
 				convidados.add(rs.getString("nome_usuario"));
 			}
 			compromisso.setConvidados(convidados);
@@ -301,7 +311,7 @@ public class CompromissoDAO {
 				}
 			}
 		} finally {
-			
+
 			BancoDados.finalizarStatement(st);
 			BancoDados.finalizarResultSet(rs);
 			BancoDados.desconectar();

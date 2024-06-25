@@ -38,7 +38,9 @@ public class AgendaWindow extends JFrame {
 	private JScrollPane scrollPane;
 	private JButton btnAbrir;
 	
-	AgendaService agendaService = new AgendaService();
+	private AgendaService agendaService = new AgendaService();
+	private JButton btnConvites;
+	private List<Agenda> agendas = new ArrayList<>();
 	
 	public AgendaWindow() {
 		initComponents();
@@ -47,9 +49,8 @@ public class AgendaWindow extends JFrame {
 
 	private void buscarAgendas() {
 
-		List<Agenda> agendas = new ArrayList<>();
 		try {
-			agendas = agendaService.buscarAgendas(Sessao.getUsuario().getIdUsuario());
+			this.agendas = agendaService.buscarAgendas(Sessao.getUsuario().getIdUsuario());
 			DefaultTableModel modelo = (DefaultTableModel) tblAgendas.getModel();
 			modelo.fireTableDataChanged();
 			modelo.setRowCount(0);
@@ -73,7 +74,7 @@ public class AgendaWindow extends JFrame {
 		this.dispose();
 		new CompromissoWindow(agenda).setVisible(true);
 	}
-
+	
 	private void abrirConvites() {
 		dispose();
 		new ConvitesWindow(this.agendas).setVisible(true);
@@ -125,7 +126,7 @@ public class AgendaWindow extends JFrame {
 		setResizable(false);
 		setTitle("AGENDAS");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 653, 416);
+		setBounds(100, 100, 757, 377);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -139,7 +140,7 @@ public class AgendaWindow extends JFrame {
 			}
 		});
 		btnCriarAgenda.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnCriarAgenda.setBounds(416, 330, 95, 23);
+		btnCriarAgenda.setBounds(626, 94, 101, 23);
 		contentPane.add(btnCriarAgenda);
 
 		btnEditarAgenda = new JButton("Editar");
@@ -149,7 +150,7 @@ public class AgendaWindow extends JFrame {
 			}
 		});
 		btnEditarAgenda.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnEditarAgenda.setBounds(305, 330, 101, 23);
+		btnEditarAgenda.setBounds(626, 128, 101, 23);
 		contentPane.add(btnEditarAgenda);
 
 		btnExcluirAgenda = new JButton("Excluir");
@@ -159,7 +160,7 @@ public class AgendaWindow extends JFrame {
 			}
 		});
 		btnExcluirAgenda.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnExcluirAgenda.setBounds(200, 330, 95, 23);
+		btnExcluirAgenda.setBounds(626, 162, 101, 23);
 		contentPane.add(btnExcluirAgenda);
 
 		btnVoltar = new JButton("Voltar");
@@ -169,7 +170,7 @@ public class AgendaWindow extends JFrame {
 			}
 		});
 		btnVoltar.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnVoltar.setBounds(20, 330, 89, 23);
+		btnVoltar.setBounds(626, 286, 101, 23);
 		contentPane.add(btnVoltar);
 
 		lblTitulo = new JLabel("AGENDAS");
@@ -178,7 +179,7 @@ public class AgendaWindow extends JFrame {
 		contentPane.add(lblTitulo);
 
 		separator = new JSeparator();
-		separator.setBounds(20, 30, 596, 2);
+		separator.setBounds(20, 30, 707, 2);
 		contentPane.add(separator);
 
 		scrollPane = new JScrollPane();
@@ -215,9 +216,9 @@ public class AgendaWindow extends JFrame {
 			}
 		});
 		btnAbrir.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnAbrir.setBounds(521, 330, 95, 23);
+		btnAbrir.setBounds(626, 60, 101, 23);
 		contentPane.add(btnAbrir);
-
+		
 		btnConvites = new JButton("Convites");
 		btnConvites.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

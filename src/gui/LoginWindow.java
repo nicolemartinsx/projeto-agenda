@@ -49,9 +49,9 @@ public class LoginWindow extends JFrame {
 				txtNomeUsuario.setText(null);
 				txtSenha.setText(null);
 			}else {
+				Sessao.setUsuario(usuario);
 				this.dispose();
 				new InicioWindow().setVisible(true);
-				Sessao.setUsuario(usuario);
 			}
 		} catch (SQLException | IOException e) {
 			System.out.println(e.getMessage());

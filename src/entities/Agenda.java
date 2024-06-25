@@ -36,7 +36,7 @@ public class Agenda {
 
 	@Override
 	public String toString() {
-		return "Agenda [idAgenda=" + idAgenda + ", nome=" + nome + ", descricao=" + descricao + "]";
+		return "Agenda: "+ nome;
 	}
 
 	

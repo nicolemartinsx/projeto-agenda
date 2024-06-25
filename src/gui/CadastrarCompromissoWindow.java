@@ -106,8 +106,6 @@ public class CadastrarCompromissoWindow extends JFrame {
 			new CompromissoWindow(agenda).setVisible(true);
 
 		} catch (SQLException | IOException e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, "Erro ao salvar compromisso", "Erro", JOptionPane.ERROR_MESSAGE);
 		}
 
@@ -121,7 +119,9 @@ public class CadastrarCompromissoWindow extends JFrame {
 			usuarios = usuarioService.buscarUsuarios();
 
 			for (String usuario : usuarios) {
-				model.addElement(usuario);
+				if(!usuario.equals(Sessao.getUsuario().getNomeUsuario())) {
+					model.addElement(usuario);
+				}
 			}
 			listaConvidados.setModel(model);
 		} catch (SQLException | IOException e) {
