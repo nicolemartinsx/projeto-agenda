@@ -19,6 +19,16 @@ public class CompromissoService {
 		return new CompromissoDAO(conn).buscarCompromissos(idAgenda);
 	}
 	
+	public List<Compromisso> buscarConvites(int idUsuario) throws SQLException, IOException {
+		Connection conn = BancoDados.conectar();
+		return new CompromissoDAO(conn).buscarConvites(idUsuario);
+	}
+	
+	public void recusarConvite(int idCompromisso, int idUsuario) throws SQLException, IOException {
+		Connection conn = BancoDados.conectar();
+		new CompromissoDAO(conn).recusarConvite(idCompromisso, idUsuario);
+	}
+	
 	public Compromisso buscarCompromisso(int idCompromisso) throws SQLException, IOException {
 		Connection conn = BancoDados.conectar();
 		return new CompromissoDAO(conn).buscarCompromisso(idCompromisso);

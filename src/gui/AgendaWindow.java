@@ -74,6 +74,11 @@ public class AgendaWindow extends JFrame {
 		new CompromissoWindow(agenda).setVisible(true);
 	}
 
+	private void abrirConvites() {
+		dispose();
+		new ConvitesWindow(this.agendas).setVisible(true);
+	}
+
 	private void editarAgenda() {
 		
 		Agenda agenda = this.salvarAgenda();
@@ -212,6 +217,16 @@ public class AgendaWindow extends JFrame {
 		btnAbrir.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnAbrir.setBounds(521, 330, 95, 23);
 		contentPane.add(btnAbrir);
+
+		btnConvites = new JButton("Convites");
+		btnConvites.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				abrirConvites();
+			}
+		});
+		btnConvites.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnConvites.setBounds(521, 358, 95, 23);
+		contentPane.add(btnConvites);
 
 		setLocationRelativeTo(null);
 	}

@@ -21,10 +21,13 @@ public class InicioWindow extends JFrame {
 	private JButton btnAgenda;
 	private JButton btnConvites;
 	private JButton btnLogout;
+private JLabel lblConvite;
+
+	private CompromissoService compromissoService = new CompromissoService();
 
 	public InicioWindow() {
 		initComponents();
-
+buscarConvites();
 	}
 
 	private void editarUsuario() {
@@ -35,6 +38,17 @@ public class InicioWindow extends JFrame {
 	private void abrirAgenda() {
 		this.dispose();
 		new AgendaWindow().setVisible(true);
+	}
+
+	private void buscarConvites() {
+		try {
+			List<Compromisso> convites;
+			convites = compromissoService.buscarConvites(Sessao.getUsuario().getIdUsuario());
+			if (!convites.isEmpty())
+				lblConvite.setVisible(true);
+		} catch (SQLException | IOException e) {
+			JOptionPane.showMessageDialog(null, "Erro ao obter convites", "Erro", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	private void realizarLogout() {
@@ -97,6 +111,12 @@ public class InicioWindow extends JFrame {
 		btnLogout.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnLogout.setBounds(52, 154, 130, 23);
 		contentPane.add(btnLogout);
+
+		lblConvite = new JLabel("Você possui convites não respondidos!");
+		lblConvite.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblConvite.setBounds(10, 42, 279, 20);
+		lblConvite.setVisible(false);
+		contentPane.add(lblConvite);
 
 		setLocationRelativeTo(null);
 	}
