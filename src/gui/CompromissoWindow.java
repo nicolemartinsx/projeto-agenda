@@ -3,15 +3,17 @@ package gui;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TimeZone;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -20,11 +22,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+
+import org.w3c.dom.Text;
 
 import entities.Agenda;
 import entities.Compromisso;
-import entities.Sessao;
 import service.CompromissoService;
 
 public class CompromissoWindow extends JFrame {
@@ -45,6 +49,8 @@ public class CompromissoWindow extends JFrame {
 
 	private Agenda agenda;
 	private CompromissoService compromissoService = new CompromissoService();
+	private List<Compromisso> compromissos = new ArrayList<>();
+	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
 	public CompromissoWindow(Agenda agenda) {
 		this.agenda = agenda;
@@ -80,10 +86,7 @@ public class CompromissoWindow extends JFrame {
 
 	private void buscarCompromissos() {
 		try {
-			List<Compromisso> compromissos = new ArrayList<>();
-			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-			
-			compromissos = compromissoService.buscarCompromissos(this.agenda.getIdAgenda());
+			this.compromissos = compromissoService.buscarCompromissos(this.agenda.getIdAgenda());
 			DefaultTableModel modelo = (DefaultTableModel) tblCompromissos.getModel();
 			modelo.fireTableDataChanged();
 			modelo.setRowCount(0);
@@ -91,35 +94,83 @@ public class CompromissoWindow extends JFrame {
 			for (Compromisso compromisso : compromissos) {
 				String dataInicio = sdf.format(compromisso.getDataInicio());
 				String dataTermino = sdf.format(compromisso.getDataTermino());
-				
+
 				modelo.addRow(new Object[] { compromisso.getIdCompromisso(), compromisso.getTitulo(),
-						compromisso.getDescricao(), dataInicio, dataTermino,
-						compromisso.getLocal() });
+						compromisso.getDescricao(), dataInicio, dataTermino, compromisso.getLocal() });
 			}
 
 		} catch (SQLException | IOException e) {
 			JOptionPane.showMessageDialog(null, "Erro ao obter compromissos", "Erro", JOptionPane.ERROR_MESSAGE);
 		}
 	}
-	
+
 	private void visualizarConvidados() {
-		Compromisso compromisso = this.buscarCompromisso((int) tblCompromissos.getValueAt(tblCompromissos.getSelectedRow(), tblCompromissos.getColumnModel().getColumnIndex("ID")));
+		Compromisso compromisso = this.buscarCompromisso((int) tblCompromissos
+				.getValueAt(tblCompromissos.getSelectedRow(), tblCompromissos.getColumnModel().getColumnIndex("ID")));
 		String convidados = "Convidados: ";
-		for(String convidado : compromisso.getConvidados()) {
-			convidados = convidados+"\n"+convidado;
+		for (String convidado : compromisso.getConvidados()) {
+			convidados = convidados + "\n" + convidado;
 		}
 		JOptionPane.showMessageDialog(null, convidados, "Convidados", JOptionPane.DEFAULT_OPTION);
+	}
+	
+	private void importarCompromissos() {
+		
+	}
+
+	private void exportarCompromissos() {
+		try {
+			
+			JFileChooser fileChooser = new JFileChooser();
+			fileChooser.setDialogTitle("Salvar Compromissos em CSV");
+			fileChooser.setSelectedFile(new File("Agenda"+agenda.getNome()+".csv"));
+			fileChooser.setFileFilter(new FileNameExtensionFilter("Arquivo .CSV", "csv", "text"));
+			
+			int userSelection = fileChooser.showSaveDialog(null);
+			if (userSelection == JFileChooser.APPROVE_OPTION) {
+				File fileToSave = fileChooser.getSelectedFile();
+
+				BufferedWriter writer = new BufferedWriter(new FileWriter(fileToSave));		
+				writer.write("ID Compromisso,Título,Descrição,Data Início,Data Término,Local,Agenda ID,Agenda Nome,Agenda Descrição\n");
+
+                for (Compromisso compromisso : compromissos) {
+                	
+                	String dataInicio = sdf.format(compromisso.getDataInicio());
+    				String dataTermino = sdf.format(compromisso.getDataTermino());
+    				
+                    writer.write(compromisso.getIdCompromisso() + ",");
+                    writer.write(compromisso.getTitulo() + ",");
+                    writer.write(compromisso.getDescricao() + ",");
+                    writer.write(dataInicio + ",");
+                    writer.write(dataTermino + ",");
+                    writer.write(compromisso.getLocal() + ",");
+                    writer.write(agenda.getIdAgenda() + ",");
+                    writer.write(agenda.getNome() + ",");
+                    writer.write(agenda.getDescricao() + ",");
+                    writer.newLine();
+                }
+                
+                writer.close();
+				JOptionPane.showMessageDialog(this, "Compromissos salvos!", "Sucesso!",
+						JOptionPane.INFORMATION_MESSAGE);
+			}
+
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(this, "Erro ao exportar compromissos", "Erro", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	private void excluirCompromisso() {
 		try {
-			int op = JOptionPane.showConfirmDialog(null, "Deseja excluir esse compromisso?", "Confirmar exclusão", JOptionPane.YES_NO_OPTION);
+			int op = JOptionPane.showConfirmDialog(null, "Deseja excluir esse compromisso?", "Confirmar exclusão",
+					JOptionPane.YES_NO_OPTION);
 			if (op == 0) {
 				op = compromissoService
 						.excluirCompromisso((Integer) tblCompromissos.getValueAt(tblCompromissos.getSelectedRow(),
 								tblCompromissos.getColumnModel().getColumnIndex("ID")));
 				if (op != 0) {
-					JOptionPane.showMessageDialog(this, "Compromisso excluido!", "Sucesso!", JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(this, "Compromisso excluido!", "Sucesso!",
+							JOptionPane.INFORMATION_MESSAGE);
 				}
 				buscarCompromissos();
 			}
@@ -154,6 +205,8 @@ public class CompromissoWindow extends JFrame {
 				return columnTypes[columnIndex];
 			}
 		});
+		tblCompromissos.getColumnModel().getColumn(0).setPreferredWidth(15);
+		tblCompromissos.getColumnModel().getColumn(0).setMinWidth(10);
 		scrollPane.setViewportView(tblCompromissos);
 
 		btnConvidados = new JButton("Convidados");
@@ -217,11 +270,21 @@ public class CompromissoWindow extends JFrame {
 		contentPane.add(separator);
 
 		btnImportar = new JButton("Importar .CSV");
+		btnImportar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				importarCompromissos();
+			}
+		});
 		btnImportar.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnImportar.setBounds(867, 216, 130, 23);
 		contentPane.add(btnImportar);
 
 		btnExportar = new JButton("Exportar .CSV");
+		btnExportar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				exportarCompromissos();
+			}
+		});
 		btnExportar.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnExportar.setBounds(867, 250, 130, 23);
 		contentPane.add(btnExportar);
