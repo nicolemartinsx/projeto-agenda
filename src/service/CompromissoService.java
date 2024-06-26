@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import dao.AgendaDAO;
 import dao.BancoDados;
@@ -17,6 +18,11 @@ public class CompromissoService {
 	public List<Compromisso> buscarCompromissos(int idAgenda) throws SQLException, IOException {
 		Connection conn = BancoDados.conectar();
 		return new CompromissoDAO(conn).buscarCompromissos(idAgenda);
+	}
+	
+	public List<Compromisso> verificarCompromisso(int idUsuario) throws SQLException, IOException {
+		Connection conn = BancoDados.conectar();
+		return new CompromissoDAO(conn).verificarCompromisso(idUsuario);
 	}
 	
 	public List<Compromisso> buscarConvites(int idUsuario) throws SQLException, IOException {

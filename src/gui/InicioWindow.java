@@ -18,6 +18,7 @@ import javax.swing.border.EmptyBorder;
 import entities.Compromisso;
 import entities.Sessao;
 import service.CompromissoService;
+import service.NotificacaoThread;
 
 public class InicioWindow extends JFrame {
 
@@ -29,10 +30,16 @@ public class InicioWindow extends JFrame {
 	private JLabel lblConvite;
 
 	private CompromissoService compromissoService = new CompromissoService();
+	private NotificacaoThread notificacao = new NotificacaoThread();
 
 	public InicioWindow() {
 		initComponents();
 		buscarConvites();
+		iniciarNotificacao();
+	}
+	
+	private void iniciarNotificacao() {
+		this.notificacao.start();
 	}
 
 	private void editarUsuario() {

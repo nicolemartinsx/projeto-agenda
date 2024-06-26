@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import entities.Agenda;
 import entities.Compromisso;
@@ -113,15 +114,44 @@ public class CompromissoDAO {
 			BancoDados.desconectar();
 		}
 	}
-	
-	public void importarCompromissos() {
-		
+
+	public List<Compromisso> verificarCompromisso(int idUsuario) throws SQLException {
+
+		PreparedStatement st = null;
+		ResultSet rs = null;
+
+		try {
+
+			st = this.conn.prepareStatement(
+					"select * from compromisso inner join agenda on agenda.id_usuario = compromisso.usuario_id where compromisso.usuario_id = ? and notificacao <= NOW()");
+			st.setInt(1, idUsuario);
+			rs = st.executeQuery();
+
+			List<Compromisso> listaCompromissos = new ArrayList<>();
+			
+			while (rs.next()) {
+				Compromisso compromisso = new Compromisso();
+				compromisso.setIdCompromisso(rs.getInt("id"));
+				compromisso.setTitulo(rs.getString("titulo"));
+				compromisso.setDescricao(rs.getString("descricao"));
+				compromisso.setTitulo(rs.getString("titulo"));
+				compromisso.setDataInicio(rs.getTimestamp("data_inicio"));
+				compromisso.setDataTermino(rs.getTimestamp("data_termino"));
+				compromisso.setNotificacao(rs.getTimestamp("notificacao"));
+				compromisso.setLocal(rs.getString("local"));
+				listaCompromissos.add(compromisso);
+			}
+
+			return listaCompromissos;
+
+		} finally {
+
+			BancoDados.finalizarStatement(st);
+			BancoDados.finalizarResultSet(rs);
+			BancoDados.desconectar();
+		}
 	}
 
-	public void exportarCompromissos() {
-		
-	}
-	
 	public Compromisso buscarCompromisso(int idCompromisso) throws SQLException {
 
 		PreparedStatement st = null;
@@ -229,14 +259,14 @@ public class CompromissoDAO {
 	}
 
 	public void recusarConvite(int idCompromisso, int idUsuario) throws SQLException {
+
 		PreparedStatement st = null;
 
 		try {
-
 			st = conn
 					.prepareStatement("delete from compromisso_convidados where compromisso_id = ? and usuario_id = ?");
 			st.setInt(1, idCompromisso);
-			st.setInt(1, idUsuario);
+			st.setInt(2, idUsuario);
 
 			st.executeUpdate();
 
