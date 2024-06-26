@@ -140,7 +140,7 @@ public class CadastrarCompromissoWindow extends JFrame {
 			return Timestamp.from(ins);
 
 		} catch (ParseException e) {
-			JOptionPane.showMessageDialog(this, "Erro ao recuperar convidados", "Erro", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Erro ao converter data", "Erro", JOptionPane.ERROR_MESSAGE);
 		}
 		return null;
 	}
@@ -148,11 +148,11 @@ public class CadastrarCompromissoWindow extends JFrame {
 	private Timestamp verificarNotificacao(Timestamp data) {
 		Instant ins = data.toInstant();
 		if (cbNotificacao.getSelectedIndex() == 1) {
-			ins.minusSeconds(900);
+			ins = ins.minusSeconds(900);
 		} else if (cbNotificacao.getSelectedIndex() == 2) {
-			ins.minusSeconds(1800);
+			ins = ins.minusSeconds(1800);
 		} else {
-			ins.minusSeconds(3600);
+			ins = ins.minusSeconds(3600);
 		}
 		
 		return Timestamp.from(ins);
@@ -299,7 +299,7 @@ public class CadastrarCompromissoWindow extends JFrame {
 
 		cbNotificacao = new JComboBox();
 		cbNotificacao.setModel(
-				new DefaultComboBoxModel(new String[] { "", "15 min antes", "30 min antes", "1 hora antes" }));
+				new DefaultComboBoxModel(new String[] {"", "5", "15 min antes", "30 min antes", "1 hora antes"}));
 		cbNotificacao.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		cbNotificacao.setBounds(191, 352, 155, 22);
 		contentPane.add(cbNotificacao);

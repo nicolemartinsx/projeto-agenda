@@ -126,7 +126,7 @@ public class AgendaWindow extends JFrame {
 		setResizable(false);
 		setTitle("AGENDAS");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 757, 377);
+		setBounds(100, 100, 757, 363);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -226,7 +226,7 @@ public class AgendaWindow extends JFrame {
 			}
 		});
 		btnConvites.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnConvites.setBounds(521, 358, 95, 23);
+		btnConvites.setBounds(626, 196, 101, 23);
 		contentPane.add(btnConvites);
 
 		setLocationRelativeTo(null);
